@@ -42,5 +42,7 @@ params = {  # keys must match the query parameters the API expects
 response = requests.get(url, params=params)  # requests builds the ?key=value&... query string for us
 response.raise_for_status()  # stop with a clear error if the API returned 4xx/5xx
 
-prediction = response.json()  # parse the JSON body into a Python dict
-st.write(prediction)  # temporary: look at the dict to find the key that holds the species
+result = response.json()  # dict returned by the API, e.g. {"prediction": "Chinstrap"}
+species = result["prediction"]  # extract just the species string using the key we saw
+
+st.success(f"🐧 Predicted species: **{species}**")  # green box; markdown bold works inside st.success
