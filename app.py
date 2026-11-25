@@ -39,10 +39,11 @@ params = {  # keys must match the query parameters the API expects
     "sex": sex,
 }
 
-response = requests.get(url, params=params)  # requests builds the ?key=value&... query string for us
-response.raise_for_status()  # stop with a clear error if the API returned 4xx/5xx
+if st.button("Predict"):  # True only on the rerun right after the click, so the API is called on demand
+    response = requests.get(url, params=params)  # requests builds the ?key=value&... query string for us
+    response.raise_for_status()  # stop with a clear error if the API returned 4xx/5xx
 
-result = response.json()  # dict returned by the API, e.g. {"prediction": "Chinstrap"}
-species = result["prediction"]  # extract just the species string using the key we saw
+    result = response.json()  # dict returned by the API, e.g. {"prediction": "Chinstrap"}
+    species = result["prediction"]  # extract just the species string using the key we saw
 
-st.success(f"🐧 Predicted species: **{species}**")  # green box; markdown bold works inside st.success
+    st.success(f"🐧 Predicted species: **{species}**")  # shown only after clicking the button
