@@ -28,7 +28,7 @@ sex = st.selectbox("Sex", ["Male", "Female"])  # capitalized exactly as the mode
 ## Prediction
 """  # section title via Streamlit magic
 
-url = "https://zoo-api-1012619038362.europe-west1.run.app/predict"  # Cloud Run service URL + /predict; swap for http://localhost:8080/predict to test locally
+url = f"{st.secrets['API_URL']}/predict"  # base URL read from .streamlit/secrets.toml, endpoint added here
 
 params = {  # keys must match the query parameters the API expects
     "island": island,
