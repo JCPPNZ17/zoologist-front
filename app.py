@@ -1,4 +1,5 @@
 import streamlit as st
+import requests
 
 """
 # Zoologist front
@@ -23,24 +24,23 @@ flipper_length_mm = st.number_input("Flipper length (mm)", min_value=0.0, value=
 body_mass_g = st.number_input("Body mass (g)", min_value=0.0, value=3950.0, step=50.0)  # step=50 makes +/- buttons useful for grams
 sex = st.selectbox("Sex", ["Male", "Female"])  # capitalized exactly as the model expects
 
-st.write(island, bill_length_mm, bill_depth_mm, flipper_length_mm, body_mass_g, sex)  # temporary check: remove once it works
-
 """
-## Once we have these, let's call our API in order to retrieve a prediction
+## Prediction
+"""  # section title via Streamlit magic
 
-See ? No need to load a `model.joblib` file in this app, we do not even need to know anything about Data Science in order to retrieve a prediction...
+url = "https://zoo-api-1012619038362.europe-west1.run.app/predict"  # Cloud Run service URL + /predict; swap for http://localhost:8080/predict to test locally
 
-🤔 How could we call our API ? Of course... The `requests` package 💡
+params = {  # keys must match the query parameters the API expects
+    "island": island,
+    "bill_length_mm": bill_length_mm,
+    "bill_depth_mm": bill_depth_mm,
+    "flipper_length_mm": flipper_length_mm,
+    "body_mass_g": body_mass_g,
+    "sex": sex,
+}
 
-What are the steps to follow in order to call an API ?
+response = requests.get(url, params=params)  # requests builds the ?key=value&... query string for us
+response.raise_for_status()  # stop with a clear error if the API returned 4xx/5xx
 
-1. Which url will you use? Save it in a variable so you can easily change it later...
-
-2. Let's build a dictionary containing the parameters for our API...
-
-3. Let's call our API using the `requests` package...
-
-4. Let's retrieve the prediction from the **JSON** returned by the API...
-
-## Finally, we can display the prediction to the user
-"""
+prediction = response.json()  # parse the JSON body into a Python dict
+st.write(prediction)  # temporary: look at the dict to find the key that holds the species
